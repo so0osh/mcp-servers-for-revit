@@ -115,6 +115,9 @@ jobs:
   npm-publish:
     runs-on: ubuntu-latest
     needs: build
+    # Skip on forks: publishing uses npm trusted publishing (OIDC), which is
+    # only configured for the upstream repository.
+    if: github.repository == 'mcp-servers-for-revit/mcp-servers-for-revit'
 
     steps:
       - name: Checkout
