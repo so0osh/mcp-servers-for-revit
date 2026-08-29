@@ -128,6 +128,11 @@
       "description": "Create toposolid (site/terrain) elements from boundary loops. Revit 2027 and later only.",
       "assemblyPath": "RevitMCPCommandSet.dll",
       "supportedRevitVersions": ["2027"]
+    },
+    {
+      "commandName": "get_project_location",
+      "description": "Get the active project's SiteLocation and ProjectPosition (lat/lon, elevation, and internal-to-shared coordinate offset/rotation)",
+      "assemblyPath": "RevitMCPCommandSet.dll"
     }
   ]
 }
