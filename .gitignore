@@ -371,3 +371,6 @@ FodyWeavers.xsd
 # =============================================================================
 .claude/
 .DS_Store
+
+# graphify
+graphify-out/
