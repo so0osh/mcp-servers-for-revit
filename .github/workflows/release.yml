@@ -41,6 +41,18 @@ jobs:
           npm ci
           npm run build
 
+      - name: Sync server version to tag
+        working-directory: server
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          npm version $version --no-git-tag-version --allow-same-version
+          Write-Host "server/package.json -> $version"
+
+      - name: Pack MCP Server
+        working-directory: server
+        run: npm pack
+
       # ---------------------------------------------------------------
       # Build Plugin + CommandSet via combined solution
       # The commandset's DeployCommandSet target automatically copies
@@ -81,6 +93,14 @@ jobs:
           $outputDir = "release-assets"
           New-Item -ItemType Directory -Force -Path $outputDir
 
+          $serverTarball = Get-ChildItem -Path "server" -Filter "*.tgz" | Select-Object -First 1
+          if ($serverTarball) {
+            Copy-Item $serverTarball.FullName "$outputDir/mcp-server-for-revit-$version.tgz"
+            Write-Host "Included server tarball: $outputDir/mcp-server-for-revit-$version.tgz"
+          } else {
+            Write-Host "Warning: server tarball not found in server/*.tgz"
+          }
+
           $revitVersions = @(
             @{ Config = "Release R20"; Year = "2020" },
             @{ Config = "Release R21"; Year = "2021" },
@@ -107,7 +127,9 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: release-assets/*.zip
+          files: |
+            release-assets/*.zip
+            release-assets/*.tgz
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -136,6 +158,13 @@ jobs:
         run: |
           npm ci
           npm run build
+
+      - name: Sync server version to tag
+        working-directory: server
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          npm version "$version" --no-git-tag-version --allow-same-version
+          echo "server/package.json -> $version"
 
       - name: Publish to npm
         working-directory: server

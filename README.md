@@ -71,6 +71,10 @@ The **MCP Server** (TypeScript) translates tool calls from AI clients into WebSo
 
 ## MCP Server Setup
 
+There are two ways to install the MCP server: from the published npm package (recommended — always up to date on the upstream repo), or from a release tarball (useful on forks, where npm publishing is disabled, or when you want to pin an exact version).
+
+### Option 1: From npm
+
 The MCP server is published as an npm package and can be run directly with `npx`.
 
 **Claude Code**
@@ -99,6 +103,41 @@ Claude Desktop → Settings → Developer → Edit Config → `claude_desktop_co
 Restart Claude Desktop. When you see the hammer icon, the MCP server is connected.
 
 ![Claude Desktop connection](./assets/claude.png)
+
+### Option 2: From a release tarball
+
+Every [Release](https://github.com/mcp-servers-for-revit/mcp-servers-for-revit/releases) includes a `mcp-server-for-revit-vX.Y.Z.tgz` asset alongside the Revit plugin ZIPs. This is the only npm-based option available on forks, since npm publishing there is skipped (it requires trusted-publishing OIDC configured for the upstream repository only).
+
+1. Download the `.tgz` from the release and note its path, e.g. `C:\path\to\mcp-server-for-revit-v1.0.0.tgz`
+
+2. Point your MCP client at the tarball instead of the package name:
+
+   **Claude Code**
+   ```bash
+   claude mcp add mcp-server-for-revit -- cmd /c npx -y C:\path\to\mcp-server-for-revit-v1.0.0.tgz
+   ```
+
+   **Claude Desktop** (`claude_desktop_config.json`)
+   ```json
+   {
+       "mcpServers": {
+           "mcp-server-for-revit": {
+               "command": "cmd",
+               "args": ["/c", "npx", "-y", "C:\\path\\to\\mcp-server-for-revit-v1.0.0.tgz"]
+           }
+       }
+   }
+   ```
+
+   Alternatively, install it globally once and point `command` at the installed bin directly (avoids `npx` re-resolving on every launch):
+   ```powershell
+   npm install -g C:\path\to\mcp-server-for-revit-v1.0.0.tgz
+   ```
+   ```json
+   { "command": "mcp-server-for-revit" }
+   ```
+
+3. Restart your MCP client. When you see the hammer icon, the MCP server is connected.
 
 ## Revit Plugin Setup
 
@@ -275,8 +314,9 @@ mcp-servers-for-revit/
 A single `v*` tag drives the entire release. The [release workflow](.github/workflows/release.yml) automatically:
 
 - Builds the Revit plugin + command set for Revit 2020-2027
-- Creates a GitHub release with `mcp-servers-for-revit-vX.Y.Z-Revit<year>.zip` assets
-- Publishes the MCP server to npm as [`mcp-server-for-revit`](https://www.npmjs.com/package/mcp-server-for-revit)
+- Builds and packs the MCP server, syncing `server/package.json`'s version to the pushed tag first (so the tarball's version always matches, even if it wasn't bumped via `release.ps1`)
+- Creates a GitHub release with `mcp-servers-for-revit-vX.Y.Z-Revit<year>.zip` and `mcp-server-for-revit-vX.Y.Z.tgz` assets — the tarball is produced on every fork too, since it doesn't depend on npm publishing
+- Publishes the MCP server to npm as [`mcp-server-for-revit`](https://www.npmjs.com/package/mcp-server-for-revit) (upstream repository only)
 
 To create a release:
 
