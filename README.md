@@ -31,12 +31,20 @@ The **MCP Server** (TypeScript) translates tool calls from AI clients into WebSo
 
 - **Node.js 18+** (for the MCP server)
 - **Autodesk Revit 2020 - 2027** (any supported version)
+- **.NET 10 runtime** (required for the Revit 2027 plugin/command set) — install via `winget install Microsoft.DotNet.SDK.10` or the [.NET download page](https://dotnet.microsoft.com/download)
 
 ## Quick Start (Using a Release)
 
 1. Download the ZIP for your Revit version from the [Releases](https://github.com/mcp-servers-for-revit/mcp-servers-for-revit/releases) page (e.g., `mcp-servers-for-revit-v1.0.0-Revit2025.zip`)
 
 2. Extract the ZIP and copy the contents to your Revit addins folder:
+
+   > [!IMPORTANT]
+   > Windows blocks ZIPs downloaded from the internet, which blocks the DLLs inside after extraction and prevents Revit from loading the plugin. Right-click the ZIP → **Properties** → check **Unblock** → **OK** before extracting, or after extracting run:
+   > ```powershell
+   > Get-ChildItem -Path . -Recurse | Unblock-File
+   > ```
+
    ```
    %AppData%\Autodesk\Revit\Addins\<your Revit version>\
    ```
