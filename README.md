@@ -165,11 +165,13 @@ If using a release ZIP, the command set is pre-installed inside the plugin. For 
 | `get_available_family_types` | Get available family types in current project |
 | `get_selected_elements` | Get currently selected elements |
 | `get_material_quantities` | Calculate material quantities and takeoffs |
+| `get_project_location` | Get the project's geolocation (lat/lon, elevation) and coordinate transform to/from shared coordinates |
 | `ai_element_filter` | Intelligent element querying tool for AI assistants |
 | `analyze_model_statistics` | Analyze model complexity with element counts |
 | `create_point_based_element` | Create point-based elements (door, window, furniture) |
 | `create_line_based_element` | Create line-based elements (wall, beam, pipe) |
 | `create_surface_based_element` | Create surface-based elements (floor, ceiling, roof) |
+| `create_toposolid` | Create toposolid (site/terrain) elements from boundary loops (Revit 2027+) |
 | `create_grid` | Create a grid system with smart spacing generation |
 | `create_level` | Create levels at specified elevations |
 | `create_room` | Create and place rooms at specified locations |
